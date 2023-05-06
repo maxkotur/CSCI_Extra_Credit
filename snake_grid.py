@@ -1,6 +1,6 @@
 grid = [
     ["-", "-", "-", "-", "Y"],
-    ["R", "A", "-", "-", "-"],
+    ["R", "B", "-", "-", "-"],
     ["-", "-", "-", "-", "-"],
     ["-", "E", "-", "-", "-"],
     ["-", "-", "-", "-", "K"]
@@ -34,8 +34,9 @@ def is_valid(grid, row, col, letter):
         return False
 
     if row == 1 and col == 4:
-        if ord(grid[row-1][col]) - ord(letter) != 1:
-            return False
+        if ord(grid[row-1][col-1]) - ord(grid[row-1][col]) != 1:
+            if ord(grid[row-1][col]) - ord(letter) != 1:
+                return False
 
     # Check if the letter would make any other letter invalid
     for i in range(5):
@@ -69,7 +70,7 @@ def solve(grid, row=0, col=0, assigned_letters=None):
         assigned_letters.add(grid[row][col])
         return solve(grid, next_row, next_col, assigned_letters)
     # Try assigning each letter to the cell
-    for letter in "ABCDEFGHIJKLMNOPQRSTUVWX":
+    for letter in "ABCDEFGHIJKLMNOPQRSTUVWXY":
         if letter not in assigned_letters and is_valid(grid, row, col, letter):
             print(f"valid:{letter}")
             grid[row][col] = letter

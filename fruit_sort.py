@@ -1,12 +1,19 @@
 import heapq
 import random
+import itertools
 
 # Define the initial state
 fruits = [['apple'+str(i) for i in range(1,11)], ['banana'+str(i) for i in range(1,11)], ['orange'+str(i) for i in range(1,11)]]
-random.shuffle(fruits[0])
-random.shuffle(fruits[1])
-random.shuffle(fruits[2])
-initial_state = fruits
+
+# Flattening array
+flat_arr = list(itertools.chain(*fruits))
+
+# Shuffle the 1D list
+random.shuffle(flat_arr)
+
+# Reshape the shuffled list back into the original 2D array format
+shuffled_arr = [flat_arr[i:i+len(fruits[0])] for i in range(0, len(flat_arr), len(fruits[0]))]
+initial_state = shuffled_arr
 
 # Define the goal state
 goal_state = [['apple'+str(i) for i in range(1,11)], ['banana'+str(i) for i in range(1,11)], ['orange'+str(i) for i in range(1,11)]]
@@ -68,7 +75,6 @@ print('Initial state:')
 for row in initial_state:
     print(row)
 
-# Getting solution
 num_moves, current = astar(initial_state, goal_state, heuristic)
 print(f'Number of moves: {num_moves}')
 
