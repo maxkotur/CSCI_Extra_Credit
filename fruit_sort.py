@@ -15,10 +15,24 @@ random.shuffle(flat_arr)
 shuffled_arr = [flat_arr[i:i+len(fruits[0])] for i in range(0, len(flat_arr), len(fruits[0]))]
 initial_state = shuffled_arr
 
-# Define the goal state
-goal_state = [['apple'+str(i) for i in range(1,11)], ['banana'+str(i) for i in range(1,11)], ['orange'+str(i) for i in range(1,11)]]
+# Define the six different possible goal states
+goal_states = []
+goal_state1 = [['apple'+str(i) for i in range(1,11)], ['banana'+str(i) for i in range(1,11)], ['orange'+str(i) for i in range(1,11)]]
+goal_state2 = [['apple'+str(i) for i in range(1,11)], ['orange'+str(i) for i in range(1,11)], ['banana'+str(i) for i in range(1,11)]]
+goal_state3 = [['banana'+str(i) for i in range(1,11)], ['orange'+str(i) for i in range(1,11)], ['apple'+str(i) for i in range(1,11)]]
+goal_state4 = [['banana'+str(i) for i in range(1,11)], ['apple'+str(i) for i in range(1,11)], ['orange'+str(i) for i in range(1,11)]]
+goal_state5 = [['orange'+str(i) for i in range(1,11)], ['apple'+str(i) for i in range(1,11)], ['banana'+str(i) for i in range(1,11)]]
+goal_state6 = [['orange'+str(i) for i in range(1,11)], ['banana'+str(i) for i in range(1,11)], ['apple'+str(i) for i in range(1,11)]]
+goal_states.append(goal_state1)
+goal_states.append(goal_state2)
+goal_states.append(goal_state3)
+goal_states.append(goal_state4)
+goal_states.append(goal_state5)
+goal_states.append(goal_state6)
+
 
 # Define the heuristic function
+# Manhatten Distance Heuristic
 def heuristic(state):
     h = 0
     for i in range(3):
@@ -75,8 +89,14 @@ print('Initial state:')
 for row in initial_state:
     print(row)
 
-num_moves, current = astar(initial_state, goal_state, heuristic)
-print(f'Number of moves: {num_moves}')
+moves = []
+currents = []
+for goal_state in goal_states:
+    num_moves, current = astar(initial_state, goal_state, heuristic)
+    moves.append(moves)
+    currents.append(current)
 
-for row in current:
+print(f'Number of moves: {min(moves)}')
+index = moves.index(min(moves))
+for row in currents[index]:
     print(row)
