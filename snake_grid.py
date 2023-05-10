@@ -49,33 +49,75 @@ def is_valid(grid, row, col, letter):
 
     return True
 
+def get_unassigned_variables(grid):
+    """Returns a list of unassigned variables in the grid."""
+    unassigned_vars = []
+    for i in range(5):
+        for j in range(5):
+            if grid[i][j] == '-':
+                unassigned_vars.append((i, j))
+    return unassigned_vars
+
+def get_mrv_cell(grid):
+    """Returns the cell with the fewest remaining values."""
+    unassigned_vars = get_unassigned_variables(grid)
+    mrv_cell = None
+    min_remaining_values = float('inf')
+    for cell in unassigned_vars:
+        row, col = cell
+        remaining_values = len(get_remaining_values(grid, row, col))
+        if remaining_values < min_remaining_values:
+            mrv_cell = cell
+            min_remaining_values = remaining_values
+    return mrv_cell
+
+def get_remaining_values(grid, row, col):
+    """Returns a set of remaining values that can be assigned to the given cell."""
+    used_values = set(grid[row]) | set(grid[i][col] for i in range(5))
+    if row == col:
+        used_values |= set(grid[i][i] for i in range(5))
+    if row + col == 4:
+        used_values |= set(grid[i][4-i] for i in range(5))
+    return set('ABCDEFGHIJKLMNOPQRSTUVWXY') - used_values
+
+def count_valid_choices(grid, row, col, letter):
+    count = 0
+    if letter != grid[row][col] and is_valid(grid, row, col, letter):
+        count += 1
+    return count
+
+
+def get_lcv_order(grid, row, col, assigned_letters):
+    letter_counts = {}
+    for letter in "ABCDEFGHIJKLMNOPQRSTUVWXY":
+        if letter not in assigned_letters:
+            letter_counts[letter] = count_valid_choices(grid, row, col, letter)
+    return sorted(letter_counts, key=lambda letter: letter_counts[letter])
+
+
+def is_full(grid):
+    for row in grid:
+        if "-" in row:
+            return False
+    return True
+
 
 
 def solve(grid, row=0, col=0, assigned_letters=None):
     if assigned_letters is None:
         assigned_letters = set([grid[row][col] for row in range(5) for col in range(5) if grid[row][col] != "-"])
     # Base case: if we have filled all the cells, return True
-    if row == 5:
+    if is_full(grid):
         return True
-    # Move to the next cell
-    if col == 4:
-        next_row = row + 1
-        next_col = 0
-    else:
-        next_row = row
-        next_col = col + 1
-    # If the cell is already filled, move on to the next cell
-    if grid[row][col] != "-":
-        print("already assigned")
-        assigned_letters.add(grid[row][col])
-        return solve(grid, next_row, next_col, assigned_letters)
-    # Try assigning each letter to the cell
-    for letter in "ABCDEFGHIJKLMNOPQRSTUVWXY":
+    # Get the cell with the fewest possible choices
+    row, col = get_mrv_cell(grid)
+    # Try assigning each letter to the cell in order of increasing cost
+    for letter in get_lcv_order(grid, row, col, assigned_letters):
         if letter not in assigned_letters and is_valid(grid, row, col, letter):
             print(f"valid:{letter}")
             grid[row][col] = letter
             assigned_letters.add(letter)
-            if solve(grid, next_row, next_col, assigned_letters):
+            if solve(grid, row, col, assigned_letters):
                 return True
 
             grid[row][col] = "-"

@@ -93,7 +93,8 @@ moves = []
 currents = []
 for goal_state in goal_states:
     num_moves, current = astar(initial_state, goal_state, heuristic)
-    moves.append(moves)
+    print(num_moves)
+    moves.append(num_moves)
     currents.append(current)
 
 print(f'Number of moves: {min(moves)}')
