@@ -49,8 +49,8 @@ def is_valid(grid, row, col, letter):
 
     return True
 
+# Returns a list of unassigned variables in the grid.
 def get_unassigned_variables(grid):
-    """Returns a list of unassigned variables in the grid."""
     unassigned_vars = []
     for i in range(5):
         for j in range(5):
@@ -58,8 +58,8 @@ def get_unassigned_variables(grid):
                 unassigned_vars.append((i, j))
     return unassigned_vars
 
+# Returns the cell with the fewest remaining values.
 def get_mrv_cell(grid):
-    """Returns the cell with the fewest remaining values."""
     unassigned_vars = get_unassigned_variables(grid)
     mrv_cell = None
     min_remaining_values = float('inf')
@@ -71,8 +71,8 @@ def get_mrv_cell(grid):
             min_remaining_values = remaining_values
     return mrv_cell
 
+# Returns a set of remaining values that can be assigned to the given cell.
 def get_remaining_values(grid, row, col):
-    """Returns a set of remaining values that can be assigned to the given cell."""
     used_values = set(grid[row]) | set(grid[i][col] for i in range(5))
     if row == col:
         used_values |= set(grid[i][i] for i in range(5))
@@ -85,7 +85,6 @@ def count_valid_choices(grid, row, col, letter):
     if letter != grid[row][col] and is_valid(grid, row, col, letter):
         count += 1
     return count
-
 
 def get_lcv_order(grid, row, col, assigned_letters):
     letter_counts = {}
